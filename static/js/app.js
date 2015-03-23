@@ -15,6 +15,9 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
         _.each(relations[i].groups, function(group) {
           $scope.checkboxes[relations[i].id]['group' + group] = true;
         });
+        if(_.isUndefined(relations[i].swapped)) {
+          relations[i].swapped = false;
+        }
       }
 
       $scope.verbGroups = verbGroups;
@@ -30,11 +33,7 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
     var temp = relation.object;
     relation.object = relation.subject;
     relation.subject = temp;
-    if(_.isUndefined(relation.swapped)) {
-      relation.swapped = true;
-    } else {
-      relation.swapped = !relation.swapped;
-    }
+    relation.swapped = !relation.swapped;
   };
 
   $scope.abstractLink = function(id) {
