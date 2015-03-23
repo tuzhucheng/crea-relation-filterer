@@ -1,0 +1,23 @@
+.top-space {
+    margin-top: 70px;
+}
+
+.relation {
+    margin-left: 20px;
+}
+
+span, p {
+    font-size: 16px;
+}
+
+.glyphicon {
+    margin-left: 10px;
+}
+
+.glyphicon.invert {
+    color: #2980b9;
+}
+
+.glyphicon:hover {
+    color: #2980b9;
+}
