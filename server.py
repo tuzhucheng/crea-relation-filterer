@@ -1,6 +1,14 @@
 from flask import Flask, jsonify, send_from_directory, make_response, request
-import StringIO, csv
+from pymongo import MongoClient
+import os
+import json
 app = Flask(__name__, static_url_path='')
+
+mongo_uri = os.environ['MONGOLAB_URI']
+mongo_database_str = mongo_uri.split('/')[-1]
+client = MongoClient(mongo_uri)
+db = client[mongo_database_str]
+relations_collection = db['relations']
 
 
 @app.route('/')
@@ -20,15 +28,26 @@ def send_css(path):
 
 @app.route('/api/get_all_relations')
 def get_all_relations():
-    relations = []
-    with open('data/output.csv', 'r') as f:
-        for line in f:
-            parts = line.split(';');
-            relations.append({'subject': parts[2],
-                              'predicate': parts[1],
-                              'object': parts[0],
-                              'keyword': parts[3],
-                              'article_id': parts[4].rstrip()})
+    relations = relations_collection.find()
+    if relations.count() == 0:
+        relations = []
+        i = 1
+        with open('data/output.csv', 'r') as f:
+            for line in f:
+                parts = line.split(';');
+                relations.append({'id': id,
+                                  'subject': parts[2],
+                                  'predicate': parts[1],
+                                  'object': parts[0],
+                                  'keyword': parts[3],
+                                  'article_id': parts[4].rstrip()})
+                id += 1
+    else:
+        sanitized_relations = []
+        for relation in relations:
+            relation.pop('_id', None);
+            sanitized_relations.append(relation)
+        relations = sanitized_relations
     return jsonify(relations=relations)
 
 
@@ -45,5 +64,16 @@ def get_pg_export():
     return output
 
 
+@app.route('/api/save_relations', methods=['POST'])
+def save_relations():
+    post = request.get_json()
+    relations = sorted(post.get('relations'), key=lambda x: x['id'])
+
+    # empty existing relations
+    relations_collection.delete_many({})
+    relations_collection.insert_many(relations)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

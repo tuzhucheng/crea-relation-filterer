@@ -5,19 +5,21 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
     success(function(data) {
       var relations = data.relations;
 
-      _.each(relations, function(relation, index) {
-        relation.id = index + 1;
-      });
       var verbGroups = _.groupBy(relations, function(relation) {
           return relation.predicate;
       });
 
       $scope.checkboxes = {};
-      for (var i = 1; i <= relations.length; i++) {
-        $scope.checkboxes[i] = {};
+      for (var i = 0; i < relations.length; i++) {
+        $scope.checkboxes[relations[i].id] = {};
+        _.each(relations[i].groups, function(group) {
+          $scope.checkboxes[relations[i].id]['group' + group] = true;
+        });
       }
 
       $scope.verbGroups = verbGroups;
+
+      $scope.updateCategories();
     }).
     error(function(data) {
       // called asynchronously if an error occurs
@@ -60,6 +62,49 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
     $scope.categorized = groups;
   };
 
+  $scope.save = function() {
+    var postObj = {relations: []};
+
+    _.each($scope.verbGroups, function(verbGroup) {
+      _.each(verbGroup, function(relation) {
+        delete relation.$$hashKey;
+
+        var groups = [];
+        if ($scope.checkboxes && $scope.checkboxes[relation.id] && $scope.checkboxes[relation.id].group1) {
+          groups.push(1);
+        }
+
+        if ($scope.checkboxes && $scope.checkboxes[relation.id] && $scope.checkboxes[relation.id].group2) {
+          groups.push(2);
+        }
+
+        if ($scope.checkboxes && $scope.checkboxes[relation.id] && $scope.checkboxes[relation.id].group3) {
+          groups.push(3);
+        }
+
+        relation.groups = groups;
+        postObj.relations.push(relation);
+      });
+    });
+
+    $http({
+      url: '/api/save_relations',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: JSON.stringify(postObj)
+    }).
+    success(function(data) {
+      $("#saved-success-alert").fadeIn().slideDown();
+      window.setTimeout(function() {
+        $("#saved-success-alert").fadeOut().slideUp();
+      }, 3000);
+    }).
+    error(function(data) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+    });
+  }
+
   $scope.pgExport = function() {
     var postObj = {relations: []};
 
@@ -77,7 +122,6 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
       data: JSON.stringify(postObj)
     }).
     success(function(data) {
-      console.log('POST success');
       var element = angular.element('<a/>');
       element.attr({
          href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),

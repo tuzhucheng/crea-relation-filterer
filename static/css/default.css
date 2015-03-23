@@ -21,3 +21,7 @@ span, p {
 .glyphicon:hover {
     color: #2980b9;
 }
+
+#saved-success-alert {
+    display: none;
+}

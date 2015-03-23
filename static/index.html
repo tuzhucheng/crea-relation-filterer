@@ -40,7 +40,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#" ng-click="pgExport()">PG Export</a></li>
-            <li><a href="#">PG Export with Annotations</a></li>
+            <li><a href="#" ng-click="save()">Save</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -49,9 +49,12 @@
     <div class="container top-space">
         <div class="row">
             <div class="col-md-12">
+                <div class="alert alert-success" id="saved-success-alert" role="alert">Data saved successfully!</div>
+            </div>
+            <div class="col-md-12">
                 <!-- <input class="btn btn-primary" type="button" value="Fetch" ng-click="fetchRelations()"> -->
                 <div class="col-md-8">
-                    <div ng-repeat="(verbName, relations) in verbGroups" class="panel panel-default">
+                    <div ng-repeat="(verbName, relations) in verbGroups | orderBy:'id'" class="panel panel-default">
                         <div class="panel-body">
                             <h2>{{verbName}} ({{relations.length}})</h2>
                             <div ng-repeat="relation in relations">
