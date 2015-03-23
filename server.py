@@ -39,11 +39,6 @@ def get_pg_export():
     relations = sorted(post.get('relations'), key=lambda x: x['id'])
     csvList = '\n'.join(';'.join([rel['subject'], rel['predicate'], rel['object'], rel['keyword'],
      'http://www.ncbi.nlm.nih.gov/pubmed/' + rel['article_id']]) for rel in relations)
-    print relations
-    si = StringIO.StringIO()
-    writer = csv.writer(si)
-
-    writer.writerow('hello')
     output = make_response(csvList)
     output.headers["Content-Disposition"] = "attachment; filename=pg_export.csv"
     output.headers["Content-type"] = "text/csv"
@@ -51,4 +46,4 @@ def get_pg_export():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

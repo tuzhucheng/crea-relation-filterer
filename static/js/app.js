@@ -35,6 +35,10 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
     }
   };
 
+  $scope.abstractLink = function(id) {
+    return 'http://www.ncbi.nlm.nih.gov/pubmed/' + id;
+  }
+
   $scope.updateCategories = function() {
     var groups = {'1': [], '2': [], '3': []};
     _.each($scope.verbGroups, function(verbGroup) {

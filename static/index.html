@@ -68,7 +68,7 @@
                                     <span class="subject text-primary">{{ relation.subject }}</span>
                                     <span class="predicate text-success">{{ relation.predicate }}</span>
                                     <span class="object text-danger">{{ relation.object }}</span>
-                                    <span class="object text-danger">{{ relation.id }}</span>
+                                    <a href="{{abstractLink(relation.article_id)}}" target="_new">link</a>
                                     <span class="glyphicon glyphicon-random" ng-class="{invert: relation.swapped}" ng-click="swap(relation)" aria-hidden="true"></span>
                                 </label>
                             </div>
