@@ -63,7 +63,8 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
   };
 
   $scope.save = function() {
-    var postObj = {relations: []};
+    var hash = CryptoJS.MD5($scope.password);
+    var postObj = {relations: [], password: hash.toString(CryptoJS.enc.Hex)};
 
     _.each($scope.verbGroups, function(verbGroup) {
       _.each(verbGroup, function(relation) {
@@ -100,8 +101,10 @@ app.controller('FilterController', ['$scope', '$http', function($scope, $http) {
       }, 3000);
     }).
     error(function(data) {
-      // called asynchronously if an error occurs
-      // or server returns response with an error status.
+      $("#saved-error-alert").fadeIn().slideDown();
+      window.setTimeout(function() {
+        $("#saved-error-alert").fadeOut().slideUp();
+      }, 3000);
     });
   }
 

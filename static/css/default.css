@@ -22,6 +22,6 @@ span, p {
     color: #2980b9;
 }
 
-#saved-success-alert {
+#saved-success-alert, #saved-error-alert {
     display: none;
 }

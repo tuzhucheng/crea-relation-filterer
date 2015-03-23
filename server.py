@@ -9,6 +9,7 @@ mongo_database_str = mongo_uri.split('/')[-1]
 client = MongoClient(mongo_uri)
 db = client[mongo_database_str]
 relations_collection = db['relations']
+access_codes_collection = db['access_codes']
 
 
 @app.route('/')
@@ -68,11 +69,23 @@ def get_pg_export():
 def save_relations():
     post = request.get_json()
     relations = sorted(post.get('relations'), key=lambda x: x['id'])
+    hashed_password = post.get('password')
 
-    # empty existing relations
-    relations_collection.delete_many({})
-    relations_collection.insert_many(relations)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    authorized = False
+    for valid_hash in access_codes_collection.find():
+        print valid_hash['hash']
+        print hashed_password
+        if valid_hash['hash'] == hashed_password:
+            authorized = True
+            break
+
+    if authorized:
+        # empty existing relations
+        relations_collection.delete_many({})
+        relations_collection.insert_many(relations)
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    else:
+        return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
 
 if __name__ == "__main__":
