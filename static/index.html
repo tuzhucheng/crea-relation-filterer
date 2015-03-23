@@ -84,10 +84,10 @@
             <div class="col-md-12">
                 <!-- <input class="btn btn-primary" type="button" value="Fetch" ng-click="fetchRelations()"> -->
                 <div class="col-md-8">
-                    <div ng-repeat="(verbName, relations) in verbGroups | orderBy:'id'" class="panel panel-default">
+                    <div ng-repeat="(verbName, relations) in verbGroups" class="panel panel-default">
                         <div class="panel-body">
                             <h2>{{verbName}} ({{relations.length}})</h2>
-                            <div ng-repeat="relation in relations">
+                            <div ng-repeat="relation in relations | orderBy:'id'">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="{{$index + '-1'}}" ng-model="checkboxes[relation.id].group1" ng-change="updateCategories()" value="group1"> 1
                                 </label>
@@ -114,7 +114,7 @@
                         <div ng-if="relations.length > 0">
                             <h3 class="text-info">Category {{categoryNum}} ({{relations.length}})</h3>
                             <ul>
-                                <li ng-repeat="relation in relations">
+                                <li ng-repeat="relation in relations | orderBy:'id'">
                                     <span class="subject text-primary">{{ relation.subject }}</span>
                                     <span class="predicate text-success">{{ relation.predicate }}</span>
                                     <span class="object text-danger">{{ relation.object }}</span>

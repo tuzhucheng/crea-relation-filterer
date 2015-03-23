@@ -32,7 +32,7 @@ def get_all_relations():
     relations = relations_collection.find()
     if relations.count() == 0:
         relations = []
-        i = 1
+        id = 1
         with open('data/output.csv', 'r') as f:
             for line in f:
                 parts = line.split(';');
@@ -73,20 +73,18 @@ def save_relations():
 
     authorized = False
     for valid_hash in access_codes_collection.find():
-        print valid_hash['hash']
-        print hashed_password
         if valid_hash['hash'] == hashed_password:
             authorized = True
             break
 
     if authorized:
         # empty existing relations
-        relations_collection.delete_many({})
-        relations_collection.insert_many(relations)
+        relations_collection.remove({})
+        relations_collection.insert(relations)
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
