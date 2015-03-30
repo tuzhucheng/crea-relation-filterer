@@ -104,6 +104,9 @@
                                 <label class="checkbox-inline">
                                     <input type="checkbox" id="{{$index + '-3'}}" ng-model="checkboxes[relation.id].group3" ng-change="updateCategories()"  value="group3"> 3
                                 </label>
+                                 <label class="checkbox-inline">
+                                    <input type="checkbox" id="{{$index + 'remove'}}" ng-model="checkboxes[relation.id].remove" ng-change="updateCategories()"  value="remove"> 3
+                                </label>
                                 <label class="relation">
                                     <span class="subject text-primary">{{ relation.subject }}</span>
                                     <span class="predicate text-success">{{ relation.predicate }}</span>
