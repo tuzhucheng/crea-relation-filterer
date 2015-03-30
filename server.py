@@ -54,9 +54,8 @@ def get_all_relations():
 
 @app.route('/api/get_pg_export', methods=['POST'])
 def get_pg_export():
-    post = request.get_json()
-
-    relations = sorted(post.get('relations'), key=lambda x: x['id'])
+    relations = relations_collection.find()
+    relations = sorted(relations, key=lambda x: x['id'])
     csvList = '\n'.join(';'.join([rel['subject'], rel['predicate'], rel['object'], rel['keyword'],
      'http://www.ncbi.nlm.nih.gov/pubmed/' + rel['article_id']]) for rel in relations)
     output = make_response(csvList)
@@ -87,4 +86,4 @@ def save_relations():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
