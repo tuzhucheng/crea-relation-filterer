@@ -56,6 +56,7 @@ def get_all_relations():
 def get_pg_export():
     relations = relations_collection.find()
     relations = sorted(relations, key=lambda x: x['id'])
+    relations = [rel for rel in relations if len(rel['groups']) > 0]
     csvList = '\n'.join(';'.join([rel['subject'], rel['predicate'], rel['object'], rel['keyword'],
      'http://www.ncbi.nlm.nih.gov/pubmed/' + rel['article_id']]) for rel in relations)
     output = make_response(csvList)
